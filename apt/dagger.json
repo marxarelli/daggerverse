@@ -1,5 +1,6 @@
 {
+  "name": "apt",
   "sdk": "go",
-  "source": "dagger",
+  "source": ".",
   "engineVersion": "v0.10.0"
 }
