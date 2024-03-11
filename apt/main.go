@@ -5,7 +5,7 @@ type Apt struct{}
 var aptInstall = []string{"apt-get", "install", "-y"}
 
 func (apt *Apt) Install(packages []string) WithContainerFunc {
-	return func(ctr *Container) {
+	return WithContainerFunc(func(ctr *Container) {
 		return ctr.
 			WithMountedCache(
 				"/var/lib/apt",
@@ -19,5 +19,5 @@ func (apt *Apt) Install(packages []string) WithContainerFunc {
 			).
 			WithEnvVariable("DEBIAN_FRONTEND", "noninteractive").
 			WithExec(append(aptInstall, packages...))
-	}
+	})
 }
