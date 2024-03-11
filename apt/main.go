@@ -10,7 +10,7 @@ type Apt struct {
 	*Container
 }
 
-func (apt *Apt) Install(packages []string) *Container {
+func (apt *Apt) withApt(f WithContainerFunc) *Container {
 	return apt.
 		WithMountedCache(
 			"/var/lib/apt",
@@ -23,8 +23,14 @@ func (apt *Apt) Install(packages []string) *Container {
 			ContainerWithMountedCacheOpts{Sharing: Locked},
 		).
 		WithEnvVariable("DEBIAN_FRONTEND", "noninteractive").
-		WithExec(append(aptInstall, packages...)).
+		With(f).
 		WithoutEnvVariable("DEBIAN_FRONTEND").
 		WithoutMount("/var/cache/apt").
 		WithoutMount("/var/lib/apt")
+}
+
+func (apt *Apt) Install(packages []string) *Container {
+	return apt.withApt(func(ctr *Container) {
+		return ctr.withExec(append(aptInstall, packages...))
+	})
 }
