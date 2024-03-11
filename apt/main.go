@@ -10,7 +10,7 @@ type Apt struct {
 	*Container
 }
 
-func (apt *Apt) withApt(f WithContainerFunc) *Container {
+func (apt *Apt) withApt(f WithContainerFunc) {
 	return apt.
 		WithMountedCache(
 			"/var/lib/apt",
@@ -30,7 +30,7 @@ func (apt *Apt) withApt(f WithContainerFunc) *Container {
 }
 
 func (apt *Apt) Install(packages []string) *Container {
-	return apt.withApt(WithContainerFunc(func(ctr *Container) {
+	return apt.withApt(func(ctr *Container) *Container {
 		return ctr.WithExec(append(aptInstall, packages...))
-	}))
+	})
 }
