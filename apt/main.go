@@ -1,11 +1,17 @@
 package main
 
-type Apt struct{}
-
 var aptInstall = []string{"apt-get", "install", "-y"}
 
-func (apt *Apt) Install(ctr *Container, packages []string) *Container {
-	return ctr.
+func New(ctr *Container) *Apt {
+	return &Apt{ctr}
+}
+
+type Apt struct {
+	*Container
+}
+
+func (apt *Apt) Install(packages []string) *Container {
+	return apt.
 		WithMountedCache(
 			"/var/lib/apt",
 			dag.CacheVolume("/var/lib/apt"),
@@ -17,5 +23,8 @@ func (apt *Apt) Install(ctr *Container, packages []string) *Container {
 			ContainerWithMountedCacheOpts{Sharing: Locked},
 		).
 		WithEnvVariable("DEBIAN_FRONTEND", "noninteractive").
-		WithExec(append(aptInstall, packages...))
+		WithExec(append(aptInstall, packages...)).
+		WithoutEnvVariable("DEBIAN_FRONTEND").
+		WithoutMount("/var/cache/apt").
+		WithoutMount("/var/lib/apt")
 }
