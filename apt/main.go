@@ -31,6 +31,6 @@ func (apt *Apt) withApt(f WithContainerFunc) *Container {
 
 func (apt *Apt) Install(packages []string) *Container {
 	return apt.withApt(func(ctr *Container) {
-		return ctr.withExec(append(aptInstall, packages...))
+		return ctr.WithExec(append(aptInstall, packages...))
 	})
 }
