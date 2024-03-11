@@ -10,7 +10,7 @@ type Apt struct {
 	*Container
 }
 
-func (apt *Apt) withApt(f WithContainerFunc) {
+func (apt *Apt) withApt(f WithContainerFunc) *Container {
 	return apt.
 		WithMountedCache(
 			"/var/lib/apt",
